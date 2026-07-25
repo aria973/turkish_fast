@@ -1,0 +1,231 @@
+@import "tailwindcss";
+
+/* ============================================================
+   TYPOGRAPHY SYSTEM
+   Base 17px matches iOS body text. All rem-based sizes scale
+   together when the user picks Large / Extra Large.
+   ============================================================ */
+:root {
+  --app-font-scale: 1;
+  --tap-min: 44px; /* Apple HIG minimum touch target */
+}
+
+html {
+  font-size: calc(17px * var(--app-font-scale));
+  -webkit-text-size-adjust: 100%;
+  overscroll-behavior-y: none;
+  text-rendering: optimizeLegibility;
+}
+
+html[data-text-scale='large'] { --app-font-scale: 1.13; }
+html[data-text-scale='xlarge'] { --app-font-scale: 1.28; }
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display",
+    "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  font-feature-settings: "kern" 1, "liga" 1, "cv11" 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #f2f2f7;
+  color: #1c1c1e;
+  overflow-x: hidden;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  overscroll-behavior-y: none;
+  line-height: 1.5;
+  letter-spacing: -0.01em;
+}
+
+/* Turkish text deserves a touch more tracking for dotted/dotless i clarity */
+.tr-text {
+  letter-spacing: 0.005em;
+  font-variant-ligatures: none;
+}
+
+/* Pronunciation transcripts: monospace + generous spacing so
+   syllable boundaries and CAPS stress are unmistakable */
+.transcript {
+  font-family: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
+  letter-spacing: 0.02em;
+  line-height: 1.65;
+  word-spacing: 0.08em;
+}
+
+/* Dyslexia-friendly mode: heavier weight, wider tracking, taller lines */
+html.dyslexic body {
+  font-family: "Verdana", "Trebuchet MS", -apple-system, sans-serif;
+  letter-spacing: 0.035em;
+  word-spacing: 0.12em;
+  line-height: 1.75;
+}
+html.dyslexic .transcript {
+  letter-spacing: 0.06em;
+  line-height: 1.9;
+}
+
+/* ============================================================
+   HIGH CONTRAST MODE (WCAG AAA-leaning)
+   ============================================================ */
+html.hc body {
+  background-color: #ffffff;
+  color: #000000;
+}
+html.hc .text-gray-400,
+html.hc .text-gray-500 {
+  color: #4b5563 !important;
+}
+html.hc .text-gray-300 {
+  color: #6b7280 !important;
+}
+html.hc .border-gray-200,
+html.hc .border-gray-100 {
+  border-color: #9ca3af !important;
+}
+html.hc .bg-white {
+  background-color: #ffffff !important;
+}
+html.hc button {
+  font-weight: 800 !important;
+}
+html.hc .text-red-600,
+html.hc .text-red-500 {
+  color: #b91c1c !important;
+}
+html.hc .text-amber-700,
+html.hc .text-amber-600 {
+  color: #92400e !important;
+}
+html.hc .text-emerald-600 {
+  color: #047857 !important;
+}
+
+/* ============================================================
+   FOCUS VISIBILITY (keyboard + switch control users)
+   ============================================================ */
+:focus-visible {
+  outline: 3px solid #dc2626;
+  outline-offset: 2px;
+  border-radius: 10px;
+}
+html.hc :focus-visible {
+  outline: 4px solid #000000;
+  outline-offset: 3px;
+}
+
+/* Screen-reader-only helper */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Guarantee comfortable hit areas on interactive rows */
+.tap-target {
+  min-height: var(--tap-min);
+  min-width: var(--tap-min);
+}
+
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .pt-safe { padding-top: env(safe-area-inset-top, 0px); }
+  .pb-safe { padding-bottom: max(env(safe-area-inset-bottom, 0px), 6px); }
+  .pl-safe { padding-left: env(safe-area-inset-left, 0px); }
+  .pr-safe { padding-right: env(safe-area-inset-right, 0px); }
+  .glass-card {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+  }
+  .dark .glass-card {
+    background: rgba(28, 28, 30, 0.85);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+}
+
+button,
+a {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* Prevent iOS auto-zoom on focus (font must be >= 16px) */
+input,
+textarea,
+select {
+  font-size: 16px !important;
+}
+
+/* ============================================================
+   ANIMATIONS
+   ============================================================ */
+@keyframes pulse-ring {
+  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+  70% { transform: scale(1); box-shadow: 0 0 0 12px rgba(239, 68, 68, 0); }
+  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+}
+.animate-recording { animation: pulse-ring 1.5s infinite; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fadeIn { animation: fadeIn 0.28s ease-out both; }
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-7px); }
+  40% { transform: translateX(7px); }
+  60% { transform: translateX(-5px); }
+  80% { transform: translateX(5px); }
+}
+.animate-shake { animation: shake 0.4s ease-in-out; }
+
+@keyframes popIn {
+  0% { opacity: 0; transform: scale(0.85); }
+  70% { transform: scale(1.04); }
+  100% { opacity: 1; transform: scale(1); }
+}
+.animate-popIn { animation: popIn 0.3s ease-out both; }
+
+@keyframes sheetUp {
+  0% { transform: translateY(100%); }
+  100% { transform: translateY(0); }
+}
+.animate-sheetUp { animation: sheetUp 0.34s cubic-bezier(0.32, 0.72, 0, 1) both; }
+
+/* Respect reduced-motion (user toggle or OS preference) */
+html.reduce-motion *,
+html.reduce-motion *::before,
+html.reduce-motion *::after {
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001ms !important;
+  scroll-behavior: auto !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
